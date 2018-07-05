@@ -481,8 +481,8 @@
       var queryText = encodeURI(query);  
 
       var gvizQuery = new google.visualization.Query(
-          'http://www.google.com/fusiontables/gvizdata?tq='  + queryText);
-      console.log('http://www.google.com/fusiontables/gvizdata?tq='  + queryText);  
+          'https://www.google.com/fusiontables/gvizdata?tq='  + queryText);
+      console.log('https://www.google.com/fusiontables/gvizdata?tq='  + queryText);  
 
         gvizQuery.send(function(response) {
           var numRows = response.getDataTable().getNumberOfRows();
