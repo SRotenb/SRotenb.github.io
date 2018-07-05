@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Send email">
+  <title>Send map to email</title>
+</head>
+  <style type="text/css">
+
+    input[type=submit] {
+        padding:5px 15px; 
+        background:#0473ff; 
+        color:#ffffff;
+        border:0 none;
+        cursor:pointer;
+        -webkit-border-radius: 5px;
+        border-radius: 5px; 
+    }
+
+    input {
+        cursor: pointer !important;
+    }
+  </style>
+<body>
+  <h2 class="content-head is-center">Send email</h2>
+  <form action="hawaii_restaurants_interactive_map10.html" method="get"><div style="float:left"><input type="submit" value="< Back"/></div></form>
+  <br>
+  <br>
+  <aside style="background:#0473ff;" size="100%">
+       <p>
+           Send the map with directions to your email
+       </p>
+   </aside>
+
+<!-- START HERE -->
+   <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css">
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+   <!-- Style The Contact Form How Ever You Prefer -->
+   <link rel="stylesheet" href="https://cdn.rawgit.com/dwyl/learn-to-send-email-via-google-script-html-no-server/master/style.css">
+
+  <form id="gform" method="POST" class="pure-form pure-form-stacked" data-email="homeconciergemaps@gmail.com"
+  action="https://script.google.com/macros/s/AKfycbxh4zvhWICJdoi7-QX3xh_Ev5NGPb1On65WL9ZiTeF_VrjXdU8/exec">
+    <!-- change the form action to your script url -->
+
+    <fieldset class="pure-group" style="display:none;">
+      <label for="name">Name: </label>
+      <input id="name" name="name" placeholder="What your Mom calls you" />
+    </fieldset>
+
+
+    <fieldset class="pure-group"  style="display:none;">
+      <label for="message">Message: </label>
+      <input id="message" name="message" rows="2" type="text" size="100%" readonly="readonly" />
+    </fieldset>
+
+    <script type="text/javascript">
+     var storedVal = document.getElementById("message");
+        storedVal.value = localStorage.getItem("name");
+    </script>
+
+    <fieldset class="pure-group">
+      <label for="email">Email Address:</label>
+      <input id="email" name="email" type="email" size="200%" value=""
+      required placeholder="your.name@email.com"/>
+      <span id="email-invalid" style="display:none">
+        Must be a valid email address</span>
+    </fieldset>
+
+    <fieldset class="pure-group"  style="display:none;">
+      <label for="color">Favourite Color: </label>
+      <input id="color" name="color" placeholder="green" />
+    </fieldset>
+
+    <button class="button-success pure-button button-xlarge">
+      <i class="fa fa-paper-plane"></i>&nbsp;Send</button>
+
+  </form>
+
+  <!-- Customise the Thankyou Message People See when they submit the form: -->
+  <div style="display:none;" id="thankyou_message">
+    <h2>The email has been sent!</h2>
+  </div>
+
+  <!-- Submit the Form to Google Using "AJAX" -->
+  <script data-cfasync="false" type="text/javascript"
+  src="https://cdn.rawgit.com/dwyl/learn-to-send-email-via-google-script-html-no-server/master/form-submission-handler.js"></script>
+<!-- END -->
+
+</body>
+</html>

@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Hawaii restaurants</title>
+
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyA7Iugt9s6bNKeP7zcOVeXQFXQIbAhN3sA"></script>
+    <style type="text/css">
+
+      /* Used to make this wabpage responsive */
+
+    /*    
+    * {
+        box-sizing: border-box;
+    }
+
+    */
+    .desk {display:hidden}
+    .mobi {visibility:visible}
+    
+
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map, #map_mobi {
+        height: 100%;
+      }
+
+    table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+    
+    td, th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+        font-size: 11px;
+    }
+    
+    tr:nth-child(even) {
+        background-color: #dddddd;
+    }
+    html, body, #map, #map_mobi {
+      height: 600px;
+      margin: 0;
+      padding: 0;
+      width: 1000px;
+    }
+
+      /* Optional: Makes the sample page fill the window. */
+      #left-panel, #left-panel_mobi {
+        font-family: 'Roboto','sans-serif';
+        /* line-height: 25px; */
+      }
+
+      #left-panel select, #left-panel input {
+        font-size: 14px;
+      }
+
+      #left-panel_mobi select, #left-panel_mobi input {
+        font-size: 14px;
+      }
+
+      #left-panel i {
+        font-size: 12px;
+      }
+
+      #left-panel_mobi i {
+        font-size: 12px;
+      }
+
+      #left-panel {
+        height: 100%;
+        float: left;
+        overflow: auto;
+      }
+
+      #left-panel_mobi {
+        height: 100%;
+        float: left;
+        overflow: auto;
+      }
+
+
+      @media screen and (max-width: 800px) {
+
+        #blockContainer {
+            display: -webkit-box;
+            display: -moz-box;
+            display: box;
+            
+            -webkit-box-orient: vertical;
+            -moz-box-orient: vertical;
+            box-orient: vertical;
+        }
+        #map, #map_mobi {
+            -webkit-box-ordinal-group: 1;
+            -moz-box-ordinal-group: 1;
+            box-ordinal-group: 1;
+        }
+
+
+      }
+
+    #html_table {
+        font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+    
+    #html_table td, #html_table th {
+        border: 1px solid #ddd;
+        padding: 8px;
+    }
+    
+    #html_table tr:nth-child(even){background-color: #f2f2f2;}
+    
+    #html_table tr:hover {background-color: #0473ff;}
+    
+    #html_table th {
+        padding-top: 12px;
+        padding-bottom: 12px;
+        text-align: left;
+        background-color: #0473ff;
+        color: white;
+    }
+
+    input[type=submit] {
+        padding-top:10px;
+        padding-bottom:10px;
+        padding-left:10px;
+        padding-right:10px;
+        background:#0473ff; 
+        color:#ffffff;
+        border:0 none;
+        cursor:pointer;
+        -webkit-border-radius: 5px;
+        border-radius: 5px; 
+    }
+
+    input {
+        cursor: pointer !important;
+    }
+
+    input:hover {
+        background-color: #004080;
+    }
+
+    .row {
+        display: flex;
+        
+        flex-direction: row;
+        flex: auto
+    }
+
+    /*
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        -webkit-flex-direction: row;
+        -ms-flex-direction: row;
+
+    */
+    
+    .col {
+        -webkit-flex: 1;
+        -ms-flex: 1;
+        flex: 1;
+        
+    }
+    
+    .col:first-child {
+        width: 75%;
+    }
+
+    #name a:hover, #name a:active, #name a:focus {
+      background-color: #DCFFFF;
+      color:#000066;
+    }
+
+    #name {
+        border: 1px solid #0473ff;
+        border-radius: 8px;
+        width: 150px;
+    }
+
+    #name:hover {
+        background-color: #66afe9;
+    }
+
+    #name:focus {
+      border-color: #66afe9;
+      outline: 0;
+      -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6);
+      box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6);
+    }  
+
+    .container {
+        display: -webkit-flexbox;
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: flex;
+        -webkit-flex-align: center;
+        -ms-flex-align: center;
+        -webkit-align-items: center;
+        align-items: center;
+    }
+
+     /* For mobile phones: */
+    [class*="col-"] {
+        width: 100%;
+    }
+
+    .col-1 {width: 8.33%;}
+    .col-2 {width: 16.66%;}
+    .col-3 {width: 25%;}
+    .col-4 {width: 33.33%;}
+    .col-5 {width: 41.66%;}
+    .col-6 {width: 50%;}
+    .col-7 {width: 58.33%;}
+    .col-8 {width: 66.66%;}
+    .col-9 {width: 75%;}
+    .col-10 {width: 83.33%;}
+    .col-11 {width: 91.66%;}
+    .col-12 {width: 100%;}
+    
+
+    @media only screen and (min-width: 600px) {
+        /* For tablets: */
+        .col-s-1 {width: 8.33%;}
+        .col-s-2 {width: 16.66%;}
+        .col-s-3 {width: 25%;}
+        .col-s-4 {width: 33.33%;}
+        .col-s-5 {width: 41.66%;}
+        .col-s-6 {width: 50%;}
+        .col-s-7 {width: 58.33%;}
+        .col-s-8 {width: 66.66%;}
+        .col-s-9 {width: 75%;}
+        .col-s-10 {width: 83.33%;}
+        .col-s-11 {width: 91.66%;}
+        .col-s-12 {width: 100%;}
+    }
+
+ 
+    /* All these columns should be floating to the left, and have a padding of 8px: */
+
+    [class*="col-"] {
+        float: left;
+        padding-top: 4px;
+        padding-bottom: 4px;
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+
+
+
+    @media only screen and (max-width: 768px) {
+        .mobi {visibility:visible}
+        .desk {visibility:hidden}
+        .desk {display:none}
+    }
+
+    @media only screen and (min-width: 768px) {
+        .mobi {visibility:hidden}
+        .mobi {display:none}
+        .desk {visibility:visible}
+
+        /* For desktop: */
+        .col-1 {width: 8.33%;}
+        .col-2 {width: 16.66%;}
+        .col-3 {width: 25%;}
+        .col-4 {width: 33.33%;}
+        .col-5 {width: 41.66%;}
+        .col-6 {width: 50%;}
+        .col-7 {width: 58.33%;}
+        .col-8 {width: 66.66%;}
+        .col-9 {width: 75%;}
+        .col-10 {width: 83.33%;}
+        .col-11 {width: 91.66%;}
+        .col-12 {width: 100%;}
+        #name {
+            border: 1px solid #0473ff;
+            border-radius: 8px;
+            width: 240px;
+        }
+        #name:hover {
+            background-color: #66afe9;
+        }
+
+        #left-panel, #left_panel_mobi {
+            width: 390px;
+        } 
+        
+        #left-panel select {
+          width: 100%;
+        }
+
+        #left-panel_mobi select {
+          width: 100%;
+        }
+
+    
+        #name:focus {
+          border-color: #66afe9;
+          outline: 0;
+          -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6);
+          box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6);
+        }  
+    
+        .container {
+            display: -webkit-flexbox;
+            display: -ms-flexbox;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-flex-align: center;
+            -ms-flex-align: center;
+            -webkit-align-items: center;
+            align-items: center;
+        }
+
+        /* All these columns should be floating to the left, and have a padding of 8px: */
+    
+        [class*="col-"] {
+            float: left;
+            /* padding-top: 4px;
+            padding-bottom: 4px; */
+            padding-left: 8px;
+            padding-right: 8px;
+        }
+    
+        /*
+        .row::after {
+            content: "";
+            clear: both;
+            display: table;
+        } */
+    }
+
+
+    </style>
+
+    <script type="text/javascript">
+    //declare variables 
+    var Api_Key='AIzaSyA7Iugt9s6bNKeP7zcOVeXQFXQIbAhN3sA';
+
+ 
+    var image_hale_ama = 'https://lh3.googleusercontent.com/-Umf83zn4JMJ_RtnAzFNs18ouSe3T8Dkl6KlMqg3Z2IPSQMxfQNpTuimG0-wNDD8p1b_aXKqyLcmgyjUwPqciHk8q2csuulNtUs3OV-sAnXGluSrCWJRfVdXXtoWy7fXCsV42Kc=w2400';
+    var image_restaurant = 'https://gp3.googleusercontent.com/-6a4DpxwkSiobByfqWgGIKkzqdj-Sx81MtRTgqVXJDXAAhvDdomOo2qlkaTnjpNZRYgu70Nbg1kxvgZs__50rg-_LzaiSpr2sLf0D9BJz0p5WB0_sc4Lg7AGEBPM0hQKMZ4ETvE=s32-p-k';    
+    var image_shopping_mall = 'https://lh3.googleusercontent.com/6YxM0CMQ121fP_oPXJyG1Hs1q4kkZbkCkJ5rLCsDHwebWvt3ZDGUtyXH1gNECQuqt1w0QSbwi5n-K-zPVL4TqloHD34o3Lmya9UFjZS5VXh_OACN_y20QphBCwCKdX7tYXbn6nA=s36-p-k';    
+
+    // https://fusiontables.google.com/DataSource?docid=1UFN-1RbOGlYk-472tGbw1aVPI_WNuJxYDCXA16f8
+    var table_id = "1UFN-1RbOGlYk-472tGbw1aVPI_WNuJxYDCXA16f8";
+
+    var locations = [
+      ['Hale Ama', 'https://www.google.com/maps/place/69-1840+Puako+Beach+Dr,+Waimea,+HI+96743/@19.9663521,-155.8519313,17z/data=!3m1!4b1!4m5!3m4!1s0x7953878110e0b0c9:0x53c9a9ad926edc0d!8m2!3d19.9663521!4d-155.8521838', '69-1840 Puako Beach Drive Kamuela HI 96743', 19.9663941, 	-155.8519313, 'Hale Ama', '69-1840 Puako Beach Dr, Waimea, HI 96743, USA', '', '', ''],
+      ['Merrimans Big Island', 'https://www.google.com/maps/place/Merrimans+Big+Island/@20.0230144,-155.678787,17z/data=!3m1!4b1!4m5!3m4!1s0x7c07a9e04b2293fd:0xc099273ad3539802!8m2!3d20.0230144!4d-155.6765983', '', 20.0230144, -155.678787, 'Restaurant', '65-1227 Opelo Road Kamuela B, Waimea, HI 96743, USA', 'https://www.google.com/maps/contrib/103636726163501897097/photos/@21.9586111,-159.6708333,3a,75y,90t/data=!3m7!1e2!3m5!1sAF1QipNIBk0oetpXv2MRoknvLdOOY2Ag5wS2M9TDNWsE!2e10!6shttps:%2F%2Flh5.googleusercontent.com%2Fp%2FAF1QipNIBk0oetpXv2MRoknvLdOOY2Ag5wS2M9TDNWsE%3Dw365-h273-k-no!7i4032!8i3024!4m3!8m2!3m1!1e1', 3, 4.6],
+      ['Tommy Bahamas Restaurant & Bar', 'https://www.google.com/maps/place/Tommy+Bahama+Restaurant+%26+Bar/@19.941812,-155.8609297,17z/data=!3m1!4b1!4m5!3m4!1s0x7953827f7743330b:0xbb48e419db70721!8m2!3d19.941812!4d-155.858741', '', 19.941812, -155.8609297, 'Restaurant', '68-1330 Mauna Lani Dr, Waimea, HI 96743, USA', 'https://www.google.com/maps/contrib/105383282046891025949/photos/@20.0833333,-155.7166667,3a,75y,90t/data=!3m7!1e2!3m5!1sAF1QipNATytYA5nf685Ps5q44TrrobPyx7TyTdpXo3_G!2e10!6shttps:%2F%2Flh5.googleusercontent.com%2Fp%2FAF1QipNATytYA5nf685Ps5q44TrrobPyx7TyTdpXo3_G%3Dw462-h260-k-no!7i5312!8i2988!4m3!8m2!3m1!1e1', 3, 4.3],
+      ['Shiono at Mauna Lani', 'https://www.google.com/maps/place/Shiono+at+Mauna+Lani/@19.7872719,-156.0686226,11z/data=!4m12!1m6!3m5!1s0x79547804c13f2e27:0x13573591a216e230!2sShiono+at+Mauna+Lani!8m2!3d19.9387573!4d-155.8672467!3m4!1s0x0:0x13573591a216e230!8m2!3d19.9387384!4d-155.8672428', '', 19.9387573, -155.8672467, 'Restaurant', '68-1050 Makaiwa Pl, Waimea, HI 96743, USA', 'https://www.google.com/maps/contrib/105062129144118794907/photos/@19.934855,-155.866769,3a,75y,90t/data=!3m7!1e2!3m5!1sAF1QipOVNQ8SzdtkZewASYjRuuoTPnTVR6KnV0uH5aOo!2e10!6shttps:%2F%2Flh5.googleusercontent.com%2Fp%2FAF1QipOVNQ8SzdtkZewASYjRuuoTPnTVR6KnV0uH5aOo%3Dw462-h260-k-no!7i1920!8i1080!4m3!8m2!3m1!1e1', 2, 4.2],
+      ['Sansei Seafood Restaurant', 'https://www.google.com/maps/place/Sansei+Seafood+Restaurant+%26+Sushi+Bar/@19.9138247,-155.8815444,17z/data=!3m1!4b1!4m5!3m4!1s0x7953832de1baeae3:0xd1049fd45ee65a25!8m2!3d19.9138247!4d-155.8793557', '', 19.9138247, -155.8815444, 'Restaurant', '600 Office Rd, Lahaina, HI 96761, USA', 'https://www.google.com/maps/contrib/106551863428822467759/photos/@20.9945964,-156.6535748,3a,75y,90t/data=!3m7!1e2!3m5!1sAF1QipMqsctGwirRLghYg8vMx6xTpGtNM01IxCRbdnQv!2e10!6shttps:%2F%2Flh5.googleusercontent.com%2Fp%2FAF1QipMqsctGwirRLghYg8vMx6xTpGtNM01IxCRbdnQv%3Dw462-h260-k-no!7i4032!8i2268!4m3!8m2!3m1!1e1', 3, 4.3],
+      ['Seafood Bar and Grill', 'https://www.google.com/maps/place/Seafood+Bar+and+Grill/@20.0230556,-155.6716667,17z/data=!4m12!1m6!3m5!1s0x795380eb9a460665:0x9828b5ea19b0f192!2sSeafood+Bar+and+Grill!8m2!3d20.038185!4d-155.828622!3m4!1s0x795380eb9a460665:0x9828b5ea19b0f192!8m2!3d20.038185!4d-155.828622', '', 20.038185, -155.828622, 'Restaurant', '61-3642 Kawaihae Rd, Waimea, HI 96743, USA', 'https://www.google.com/maps/contrib/105411011449395951867/photos/@20.0381506,-155.8287055,3a,75y,90t/data=!3m7!1e2!3m5!1sAF1QipNDgG9ouB7V21L_z9e3BJ5DbwG-EQHyvNTIpI4n!2e10!6shttps:%2F%2Flh5.googleusercontent.com%2Fp%2FAF1QipNDgG9ouB7V21L_z9e3BJ5DbwG-EQHyvNTIpI4n%3Dw462-h260-k-no!7i4032!8i2268!4m3!8m2!3m1!1e1', 2, 4.3],
+      ['Canoehouse', 'https://www.google.com/maps/place/CanoeHouse/@19.9470894,-155.8689631,17z/data=!3m1!4b1!4m5!3m4!1s0x7954780dbba6cde7:0xaed8b8067a97fa5e!8m2!3d19.9470894!4d-155.8667744', '', 19.9470894, -155.8689631, 'Restaurant', 'Waimea, HI 96743, USA', 'https://www.google.com/maps/contrib/113845846848523901148/photos/@19.9470894,-155.8667744,3a,75y,90t/data=!3m7!1e2!3m5!1sAF1QipNfVnPqmRxHFEbgA7gfUVrcnPRsvIkSd30KIr8P!2e10!6shttps:%2F%2Flh5.googleusercontent.com%2Fp%2FAF1QipNfVnPqmRxHFEbgA7gfUVrcnPRsvIkSd30KIr8P%3Dw365-h273-k-no!7i1600!8i1200!4m3!8m2!3m1!1e1', 3, 4.4],
+      ['Manta', 'https://www.google.com/maps/place/Manta/@20.0062197,-155.8266111,17z/data=!3m1!4b1!4m5!3m4!1s0x79538733d16bacaf:0x37876c4a03265578!8m2!3d20.0062197!4d-155.8244224', '', 20.0062197, -155.8266111, 'Restaurant', '62-100 Mauna Kea Beach Drive, Waimea, HI 96743, USA', 'https://www.google.com/maps/place/Manta/@20.0062197,-155.8244224,3a,75y,90t/data=!3m8!1e2!3m6!1sAF1QipNxCpGQO3YtqNKQrldPL7DYGqXVDwyHEHYzUVib!2e10!3e12!6shttps:%2F%2Flh5.googleusercontent.com%2Fp%2FAF1QipNxCpGQO3YtqNKQrldPL7DYGqXVDwyHEHYzUVib%3Dw152-h86-k-no!7i5344!8i3006!4m5!3m4!1s0x79538733d16bacaf:0x37876c4a03265578!8m2!3d20.0062197!4d-155.8244224', 3, 3.8],
+      ['Lava Lava Beach Club', 'https://www.google.com/maps/place/Lava+Lava+Beach+Club/@19.9132977,-155.8901345,17z/data=!3m1!4b1!4m7!3m6!1s0x79547796ce185d2d:0x8b9f3cd574729cac!5m1!1s2018-05-29!8m2!3d19.9132977!4d-155.8879458', '', 19.9132977, -155.8879458, 'Restaurant', '69-1081 Ku uali i Pl, Waikoloa Village, HI 96738, USA', '69-1081 Ku uali i Pl, Waikoloa Village, HI 96738, USA', 0, 4.4],
+      ['Roy s Waikoloa Bar & Grill', 'https://www.google.com/maps/place/Roys+Waikoloa+Bar+%26+Grill/@19.9161044,-155.8838045,17z/data=!3m1!4b1!4m7!3m6!1s0x79547792fc5ce2e9:0x44984b29371eeb57!5m1!1s2018-05-29!8m2!3d19.9161044!4d-155.8816158', '', 19.9161044, -155.8816158, 'Restaurant', '69-250 Waikoloa Beach Dr, Waikoloa Village, HI 96738, USA', 'https://www.google.com/maps/contrib/103426076441759368350/photos/@19.9162,-155.8823,3a,75y,90t/data=!3m7!1e2!3m5!1sAF1QipNQ3BRfFZ1OpzIjqLwVLxLJKKgvBiq3XflpdwVs!2e10!6shttps:%2F%2Flh5.googleusercontent.com%2Fp%2FAF1QipNQ3BRfFZ1OpzIjqLwVLxLJKKgvBiq3XflpdwVs%3Dw365-h273-k-no!7i4032!8i3024!4m3!8m2!3m1!1e1', 3, 4.1],
+      ['Original Big Island Shave Ice Co', 'https://www.google.com/maps/place/Original+Big+Island+Shave+Ice+Co,+Incorperated/@20.02501,-155.6660337,17z/data=!3m1!4b1!4m5!3m4!1s0x795380ebddea5475:0x3ccd7b2a89facd04!8m2!3d20.02501!4d-155.663845', '', 20.02501, -155.663845, 'Restaurant', 'Church Rd, Waimea, HI 96743, USA', 'https://www.google.com/maps/contrib/114955348876809397662/photos/@20.0373413,-155.8267906,3a,75y,90t/data=!3m7!1e2!3m5!1sAF1QipPYf66oOujngjJ8u2i-EIqw0IU_vfDIiCVnTmQy!2e10!6shttps:%2F%2Flh5.googleusercontent.com%2Fp%2FAF1QipPYf66oOujngjJ8u2i-EIqw0IU_vfDIiCVnTmQy%3Dw365-h486-k-no!7i3036!8i4048!4m3!8m2!3m1!1e1', 1, 4.8]
+    ];
+
+    var markers = [];
+
+    google.load('visualization', '1');
+
+    function markerClick(map, m, ifw, directionsDisplay, directionsService) {
+        return function() {
+            // In case there's already an infoWindow open
+            ifw.close(map)
+            console.log("marker_click");    
+            // calculateAndDisplayRoute(directionsService, directionsDisplay, m.v_lat, m.v_lon, false);
+            calculateAndDisplayRoutediv(m.v_lat, m.v_lon, m.v_group, false);     
+
+        };
+    }; 
+
+     function markerMouseOver(map, m, ifw) {
+        return function() {
+            ifw.close(map)
+            
+            // Build html content, using data stored in the marker instance
+            var infoHtml =  m.v_name;
+
+            var infoHtml = '<div id="content">'+
+                '<div id="siteNotice">'+
+                '</div>'+
+
+                '<h1 id="firstHeading" class="firstHeading">' + m.v_name + '</h1>'+
+                '<div id="bodyContent">'+
+                '<table id="html_table">'+
+                  '<tr>'+
+                    '<th>Address</th>'+
+                    '<th>Price Category</th>'+
+                    '<th>Rating</th>'+
+                  '</tr>'+
+                  '<tr>'+
+                  '<td>' + m.v_address + '</td>'+
+                  '<td>' + m.v_price_cat + '</td>'+
+                  '<td>' + m.v_rating + '</td>'+
+                  '</tr>'+ 
+                '</table>'+
+                '</div>'+
+                '</div>';
+            
+            // Standard infoWindow initialization steps
+            infoWindow.setContent(infoHtml);
+            infoWindow.setPosition({lat: m.v_lat + 0.015 , lng: m.v_lon},);
+            infoWindow.open(map);
+        };
+     }; 
+
+    function markerMouseOut(map, m, ifw) {
+        return function() {
+            // In case there's already an infoWindow open
+            ifw.close(map)
+        };
+    }; 
+
+
+    function RefreshMap() {
+        $("#map_mobi").hide();
+        $("#header_panel_mobi").hide()
+        $("#map_mobi_footer").hide()
+
+        var isMobile = (navigator.userAgent.toLowerCase().indexOf('android') > -1) ||
+          (navigator.userAgent.match(/(iPod|iPhone|iPad|BlackBerry|Windows Phone|iemobile)/));
+        console.log(isMobile); 
+        var mapDiv = document.getElementById('map');
+        var mapDiv_mobi = document.getElementById('map_mobi');
+
+        // var legend1 = document.getElementById('googft-legend-open');
+        // var legend2 = document.getElementById('googft-legend');
+        // var map_selected;
+        infoWindow = new google.maps.InfoWindow();
+       // set the average lat and lon
+       var avg_lat = 20.0070433;	
+       var avg_lon = -155.7875666;
+       var zoom_factor = 11
+    
+        if (isMobile) {
+          var viewport = document.querySelector("meta[name=viewport]");
+          viewport.setAttribute('content', 'initial-scale=1.0, user-scalable=no');
+        }
+        mapDiv.style.width = isMobile ? '100%' : '60%';
+        mapDiv.style.height = isMobile ? '100%' : '600px';
+        var directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true});
+        var directionsService = new google.maps.DirectionsService;
+        var directionsDisplay_mobi = new google.maps.DirectionsRenderer({suppressMarkers: true});
+        var directionsService_mobi = new google.maps.DirectionsService;
+        var map = new google.maps.Map(mapDiv, {
+          center: new google.maps.LatLng(avg_lat, avg_lon),
+          zoom: zoom_factor,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        });
+        var map_mobi = new google.maps.Map(mapDiv_mobi, {
+          center: new google.maps.LatLng(avg_lat, avg_lon),
+          zoom: zoom_factor,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        });
+        directionsDisplay.setMap(map);
+        directionsDisplay_mobi.setPanel(document.getElementById('left-panel'));
+        directionsDisplay.setMap(map_mobi);
+        directionsDisplay_mobi.setPanel(document.getElementById('left-panel_mobi'));
+
+        var query = "SELECT 'Name', 'URL', 'Address', 'Lat', 'Lon', 'Group_Category', 'Picture_URL', 'Price_Category', 'Rating', 'ID', 'Marker_Picture'" +
+          " FROM " + table_id + " order by col10 asc";
+
+        // var queryText = "select+col0%2C+col1%2C+col2%2C+col3%2C+col4%2C+col13%2C+col14%2C+col5%2C+col6%2C+col7%2C+col8%2C+col9%2C+col10%2C+col11%2C+col12+from+" + data_tableid
+        // US:  var queryText = "select+col0%2C+col1%2C+col2%2C+col3%2C+col4%2C+col13%2C+col14%2C+col5%2C+col6%2C+col7%2C+col8%2C+col9%2C+col10%2C+col11%2C+col12+from+1BiHaQ2OpMsAQ8VmlKbE3VwuljjEMXH_kHBjBORft"
+
+      var queryText = encodeURI(query);  
+
+      var gvizQuery = new google.visualization.Query(
+          'http://www.google.com/fusiontables/gvizdata?tq='  + queryText);
+      console.log('http://www.google.com/fusiontables/gvizdata?tq='  + queryText);  
+
+        gvizQuery.send(function(response) {
+          var numRows = response.getDataTable().getNumberOfRows();
+          console.log(numRows);  
+          var numCols = response.getDataTable().getNumberOfColumns();
+          console.log(numCols); 
+          for (var i = 0; i < numRows; i++) {
+            // for all the records
+            // add the markers 
+
+            var v_name = response.getDataTable().getValue(i, 0);
+            var v_url = response.getDataTable().getValue(i, 1);
+            var v_address = response.getDataTable().getValue(i, 2);
+            var v_lat = parseFloat(response.getDataTable().getValue(i, 3));
+            var v_lon = parseFloat(response.getDataTable().getValue(i, 4));    
+            var v_group = response.getDataTable().getValue(i, 5);    
+            var v_pic_url = response.getDataTable().getValue(i, 6);    
+            var v_price_cat = parseFloat(response.getDataTable().getValue(i, 7));    
+            var v_rating = parseFloat(response.getDataTable().getValue(i, 8));    
+            var v_marker_picture = response.getDataTable().getValue(i, 10);    
+  
+            var marker = new google.maps.Marker({
+                v_cnt: i,                
+                position: {lat: v_lat, lng: v_lon},
+                v_name: v_name,
+                v_address: v_address,
+                v_lat: v_lat, 
+                v_lon: v_lon, 
+                v_pic_url: v_pic_url,
+                v_price_cat: v_price_cat,
+                v_rating: v_rating,
+                v_group: v_marker_picture, 
+                map: map,
+                icon: v_marker_picture
+            });
+
+
+            markers.push(marker);
+            // add the infowindow
+            var fn = markerClick(map, marker, infoWindow, directionsDisplay, directionsService);
+            google.maps.event.addListener(marker, 'click', fn);
+            // add the hoverfunction and the circle-radius
+            var fnMO = markerMouseOver(map, marker, infoWindow);
+            google.maps.event.addListener(marker, 'mouseover', fnMO);
+
+            var marker2 = new google.maps.Marker({
+                v_cnt: i,                
+                position: {lat: v_lat, lng: v_lon},
+                v_name: v_name,
+                v_address: v_address,
+                v_lat: v_lat, 
+                v_lon: v_lon, 
+                v_pic_url: v_pic_url,
+                v_price_cat: v_price_cat,
+                v_rating: v_rating,
+                v_group: v_marker_picture, 
+                map: map_mobi,
+                icon: v_marker_picture
+            });
+
+           createDiv(i, zoom_factor, directionsService, directionsDisplay, v_name, v_address, v_lat, v_lon, v_group, v_marker_picture); 
+
+            };
+          });
+    
+        // add my location
+        // Add "my location" button
+        var myLocationDiv = document.createElement('div');
+        new getMyLocation(myLocationDiv, map);
+        map.controls[google.maps.ControlPosition.TOP_RIGHT].push(myLocationDiv);
+        
+        function getMyLocation(myLocationDiv, map) {
+            var myLocationBtn = document.createElement('button');
+            myLocationBtn.innerHTML = 'My Location';
+            myLocationBtn.className = 'large-btn';
+            myLocationBtn.style.margin = '5px';
+            myLocationBtn.style.opacity = '0.95';
+            myLocationBtn.style.borderRadius = '3px';
+            myLocationDiv.appendChild(myLocationBtn);
+        
+            google.maps.event.addDomListener(myLocationBtn, 'click', function() {
+                navigator.geolocation.getCurrentPosition(function(success) {
+                    map.setCenter(new google.maps.LatLng(success.coords.latitude, success.coords.longitude));
+                    map.setZoom(12);
+                });
+            });
+        };
+      };
+      
+      google.maps.event.addDomListener(window, 'load', RefreshMap);
+
+      function calculateAndDisplayRoute(directionsService, directionsDisplay, v_lat, v_lon) {
+        console.log(v_lat);
+        console.log(v_lon);
+        // location.reload()
+        document.getElementById("left-panel").innerHTML = '<form action="hawaii_restaurants_interactive_map10.html" method="get"><div style="float:left; margin-left:3px;margin-bottom:6px;margin-top:6px"><input type="submit" value="< Back"/></div></form>';
+        document.getElementById("left-panel_mobi").innerHTML = '<form action="hawaii_restaurants_interactive_map10.html" method="get"><div style="float:left; margin-left:3px;margin-bottom:6px;margin-top:6px"><input type="submit" value="< Back"/></div></form>';
+        document.getElementById("left-panel").innerHTML += '<form action="send_email.html" method="post"><div  style="float:right; margin-right:6px;margin-top:6px"><input type="submit" value="Email Directions" onclick="saveVal(' + v_lat + ',' + v_lon + ')"/></div></form>';   
+        document.getElementById("left-panel_mobi").innerHTML += '<form action="send_email.html" method="post"><div  style="float:right; margin-right:6px;margin-top:6px"><input type="submit" value="Email Directions" onclick="saveVal(' + v_lat + ',' + v_lon + ')"/></div></form>';   
+        directionsService.route({
+          origin: {lat: 19.9663941, lng: -155.8519313},  // Hale Ama ,,19
+          destination: {lat: v_lat, lng: v_lon},  // Ocean Beach.
+          travelMode: 'DRIVING'
+        }, function(response, status) {
+          console.log(status);  
+          if (status === 'OK') {
+            directionsDisplay.setDirections(response);
+          } else {
+            window.alert('Directions request failed due to ' + status);
+          }
+        });
+
+      }
+
+    (function($) {
+        $.fn.invisible = function() {
+            return this.each(function() {
+                $(this).css("visibility", "hidden");
+            });
+        };
+        $.fn.visible = function() {
+            return this.each(function() {
+                $(this).css("visibility", "visible");
+            });
+        };
+    }(jQuery));
+
+
+      function calculateAndDisplayRoutediv(v_lat, v_lon, v_group, mobi) {
+
+        if (mobi==false) {
+          var mapDiv = document.getElementById('map');
+          var zoom_factor = 11;   
+        } else {
+          var mapDiv = document.getElementById('map_mobi');
+          $("#map_mobi").show();
+          $("#header_panel_mobi").show()
+          $("#map_mobi_footer").show()
+          $("#left-panel_mobi").hide();
+          $("#map_mobi").visible();
+          $("#header_panel_mobi").visible();
+          $("#map_mobi_footer").visible();
+
+
+          var zoom_factor = 10;   
+       }
+        // $("#map_mobi").hide();
+        // $("#map_mobi").show();
+        // $("#left-panel_mobi").hide();
+        var avg_lat = 20.0070433;	
+        var avg_lon = -155.7875666;
+        var zoom_factor = 11
+        var image_hale_ama = 'https://lh3.googleusercontent.com/-Umf83zn4JMJ_RtnAzFNs18ouSe3T8Dkl6KlMqg3Z2IPSQMxfQNpTuimG0-wNDD8p1b_aXKqyLcmgyjUwPqciHk8q2csuulNtUs3OV-sAnXGluSrCWJRfVdXXtoWy7fXCsV42Kc=w2400';
+    
+        var directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true});
+        var directionsService = new google.maps.DirectionsService;
+        var map = new google.maps.Map(mapDiv, {
+          center: new google.maps.LatLng(avg_lat, avg_lon),
+          zoom: zoom_factor,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        });
+
+ 
+        directionsDisplay.setMap(map);
+        if (mobi==false) {
+            directionsDisplay.setPanel(document.getElementById('left-panel'));
+        } else {
+            directionsDisplay.setPanel(document.getElementById('left-panel_mobi'));
+        }
+        
+        directionsService.route({
+          origin: {lat: 19.9663941, lng: -155.8519313},  // Hale Ama
+          destination: {lat: v_lat, lng: v_lon},  // Ocean Beach.
+          travelMode: 'DRIVING'
+        }, function(response, status) {
+          console.log(status);  
+          if (status === 'OK') {
+            directionsDisplay.setDirections(response);
+            var route = response.routes[0];
+            if (mobi==false) {
+              var summaryPanel = document.getElementById('left-panel');
+            } else {
+              var summaryPanel = document.getElementById('left-panel_mobi');
+            }
+            summaryPanel.innerHTML = '<p><form action="hawaii_restaurants_interactive_map10.html" method="get"><div style="float:left; margin-left:3px;margin-bottom:6px;margin-top:6px;"><input type="submit" value="< Back"/></div></form><form action="send_email.html" method="post"><div style="float:right; margin-right:6px;margin-top:6px;"><input type="submit" value="Email Directions" onclick="saveVal(' + v_lat + ',' + v_lon + ')"/></div><br></form><br></p>';   
+            // For each route, display summary information.
+            for (var i = 0; i < route.legs.length; i++) {
+              var routeSegment = i + 1;
+              summaryPanel.innerHTML += '<p><span class="container" style="font-size: 12px;"><img src="'+ image_hale_ama +'" alt="image_hale_ama">&nbsp;' + route.legs[i].start_address + '</span>';
+              console.log(route.legs[i].start_location.lat());  
+              if (v_lat != 19.9663941)  {
+                summaryPanel.innerHTML += '<span class="container" style="font-size: 12px;"><img src="'+ v_group +'" alt="image_endpoint">&nbsp;' + route.legs[i].end_address + '</span>';
+              }
+              summaryPanel.innerHTML += '</p>';
+            };
+          } else {
+            window.alert('Directions request failed due to ' + status);
+          }
+        });
+
+       var marker = new google.maps.Marker({
+            //position: {lat: 19.9663941, lng: -155.8519313},  // Hale Ama
+            position: {lat: 19.9663, lng: -155.85184},
+            map: map,
+            icon: image_hale_ama
+        });
+
+        if (v_lat == 19.9663941){
+            console.log("hale ama2");
+            var marker = new google.maps.Marker({
+            position: {lat: 19.94, lng: -155.851},
+            map: map,
+            icon: image_hale_ama        
+          });
+
+        } else {
+            console.log("not hale ama2");
+            // v_icon =  image_restaurant
+            var marker = new google.maps.Marker({
+                position: {lat: v_lat, lng: v_lon},
+                map: map,
+                icon: v_group        
+            });
+        }
+      }; 
+
+      function createDiv(index, zoom_factor, directionsService, directionsDisplay, v_name, v_address, v_lat, v_lon, v_group, v_marker_picture) {
+         console.log(v_name);
+         var directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true});
+         var directionsService = new google.maps.DirectionsService;
+         v_name = "   " + v_name;   
+         document.getElementById("left-panel").innerHTML += '';
+         document.getElementById("left-panel_mobi").innerHTML += '';
+         
+         if (v_group != "Hale Ama") {
+             document.getElementById("left-panel").innerHTML += '<div class="row"><div id="name" class="col-10" style="cursor: pointer !important;float:left;font-size: 14px;padding-right:3px; padding-left:10px;padding-bottom:10px;margin-bottom:10px; margin-top:10px; margin-right:-20px;" onclick="calculateAndDisplayRoutediv(' + v_lat + ',' + v_lon + ',\x27' + v_marker_picture + '\x27, false)">' + v_name + '</div><div class="col col-2" style="padding:10px;"><form action="send_email.html" style="float:right;font-size: 10px; padding: auto; width:100%;margin-right:-20px;" method="post"><input type="submit" value="Email Directions" onclick="saveVal(' + v_lat + ',' + v_lon + ')"/></form></div></div>';   
+             document.getElementById("left-panel_mobi").innerHTML += '<div class="row"><div id="name" class="col-9" style="cursor: pointer !important;float:left;font-size: 14px;padding-right:3px; padding-left:10px;padding-bottom:10px;margin-bottom:10px; margin-top:10px" onclick="calculateAndDisplayRoutediv(' + v_lat + ',' + v_lon + ',\x27' + v_marker_picture + '\x27, true)">' + v_name + '</div><div class="col col-3" style="padding:10px;"><form action="send_email.html" style="float:right;font-size: 10px; padding: auto; width:100%;" method="post"><input type="submit" value="Email Directions" onclick="saveVal(' + v_lat + ',' + v_lon + ')"/></form></div></div>';   
+         } else {
+            document.getElementById("left-panel").innerHTML += '<div class="row"><div id="name" class="col-10" style="cursor: pointer !important;float:left;font-size: 14px;padding-right:3px; padding-left:10px;padding-bottom:10px;margin-bottom:10px; margin-top:10px" onclick="calculateAndDisplayRoutediv(' + v_lat + ',' + v_lon + ',\x27' + v_marker_picture + '\x27, false)">' + v_name + '</div><div class="col col-2" style="padding:10px; width:100%;"></div></div>' 
+            document.getElementById("left-panel_mobi").innerHTML += '<div class="row"><div id="name" class="col-9" style="cursor: pointer !important;float:left;font-size: 14px;padding-right:3px; padding-left:10px;padding-bottom:10px;margin-bottom:10px; margin-top:10px" onclick="calculateAndDisplayRoutediv(' + v_lat + ',' + v_lon + ',\x27' + v_marker_picture + '\x27, true)">' + v_name + '</div><div class="col col-3" style="padding:10px; width:100%;"></div></div>' 
+        } 
+          document.getElementById("left-panel").innerHTML += '<br>'
+          document.getElementById("left-panel_mobi").innerHTML += '<br>'
+      }
+
+
+      function saveVal(v_lat, v_lon) {
+            // from hale ama:  19.9663941, 	-155.8519313
+           var avg_lat = 20.0070433;	
+           var avg_lon = -155.7875666;
+
+           var inputFirst = "https://www.google.com/maps/dir/19.9663941,-155.8519313/" + v_lat + "," + v_lon + "/@" + avg_lat + "," + avg_lon + ",11z/";
+           localStorage.setItem("name", inputFirst);
+           inputFirst = localStorage.getItem("name");
+      }
+
+      function time_click() {
+          $("#map_mobi").invisible();
+          $("#map_mobi_footer").hide();
+          $("#map_mobi").hide();
+          $("#header_panel_mobi").hide();
+          $("#map_mobi").css("height", "0px");
+          $("#map_mobi_footer").invisible();
+          $("#left-panel_mobi").visible();
+          $("#left-panel_mobi").show();
+      }  
+    </script>
+  </head>
+  <body>
+    <div id="BlockContainer" class="desk">  
+      <div id="left-panel" class="desk" style="top:5px; margin:5px;"></div>
+      <div id="map" class="desk" style="top:5px;"></div>
+    </div>
+    <div id="BlockContainer" class="mobi" style="float:left;width:auto;">  
+      <div id="header_panel_mobi" class="mobi" style="top:5px; margin:5px; visibility:hidden;">
+        <form action="hawaii_restaurants_interactive_map10.html" method="get"><div style="float:left; margin-left:3px;margin-bottom:6px;margin-top:6px;"><input type="submit" value="< Back"/></div></form>
+        <form action="send_email.html" method="post"><div  style="float:right; margin-right:6px;margin-top:6px"><input type="submit" value="Email Directions" onclick="saveVal(' + v_lat + ',' + v_lon + ')"/></div></form>   
+        <p></p>
+      </div>
+      <div id="map_mobi" class="mobi" style="top:5px; visibility:hidden;overflow: hidden;float:left; width:280px; height:440px; margin-bottom:10px;"></div>
+      <div id="map_mobi_footer" class="mobi" style="top:5px; margin:5px; visibility:hidden;"><div  style="float:inline-start;margin-left:3px;margin-bottom:6px;margin-top:6px;"><input type="submit" value="View directions and time" onclick="time_click()"/></div></div>
+      <div id="left-panel_mobi" class="mobi" style="top:5px; margin:5px; "></div>
+    </div>
+
+  </body>
+
+</html>
